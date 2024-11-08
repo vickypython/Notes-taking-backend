@@ -1,9 +1,10 @@
-import { Document } from "mongoose";
+import { Document,ObjectId } from "mongoose";
 export interface INotes extends Document {
   title: string;
   content: string;
 }
 export interface IUser extends Document {
+  _id:ObjectId,
   fullName: string;
   email: string;
   role: "normal" | "admin";

@@ -1,8 +1,8 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { getNotes, addNote, deleteNote, updateNote } from "../controllers";
 import { signIn, signUp,  logOut } from "../controllers/authControllers";
 //refreshToken,
-// import { verifyingToken } from "../middleware/Openauth";
+import { verifyingToken } from "../middleware/Openauth";
 const router: Router = Router();
 //for the main application section
 router.get("/all-notes", getNotes);
@@ -14,16 +14,16 @@ router.post("/register", signUp);
 router.post("/login", signIn);
 // router.post('/refreshToken',refreshToken)
 router.post('/logout',logOut)
-// router.get('/hidden',verifyingToken,function(req,res) {
-//     if(!user){
-//         res.status(403).send({message:"invalid jsonwebtoken"})
-//     }
-//     if(req.user==='admin'){
-//         res.status(200).send({message:'congratulation!'})
-//     }else{
-//         res.status(403).send({
-//             message:'unauthorised access'
-//         })
-//     }
-// })
+router.get('/hidden',verifyingToken,function(req:any,res:Response) {
+    if(!req.user){
+        res.status(403).send({message:"invalid jsonwebtoken"})
+    }
+    if(req.user.role==='admin'){
+        res.status(200).send({message:'congratulation!'})
+    }else{
+        res.status(403).send({
+            message:'unauthorised access'
+        })
+    }
+})
 export default router;

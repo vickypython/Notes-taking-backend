@@ -4,7 +4,7 @@ const express_1 = require("express");
 const controllers_1 = require("../controllers");
 const authControllers_1 = require("../controllers/authControllers");
 //refreshToken,
-// import { verifyingToken } from "../middleware/Openauth";
+const Openauth_1 = require("../middleware/Openauth");
 const router = (0, express_1.Router)();
 //for the main application section
 router.get("/all-notes", controllers_1.getNotes);
@@ -16,16 +16,17 @@ router.post("/register", authControllers_1.signUp);
 router.post("/login", authControllers_1.signIn);
 // router.post('/refreshToken',refreshToken)
 router.post('/logout', authControllers_1.logOut);
-// router.get('/hidden',verifyingToken,function(req,res) {
-//     if(!user){
-//         res.status(403).send({message:"invalid jsonwebtoken"})
-//     }
-//     if(req.user==='admin'){
-//         res.status(200).send({message:'congratulation!'})
-//     }else{
-//         res.status(403).send({
-//             message:'unauthorised access'
-//         })
-//     }
-// })
+router.get('/hidden', Openauth_1.verifyingToken, function (req, res) {
+    if (!req.user) {
+        res.status(403).send({ message: "invalid jsonwebtoken" });
+    }
+    if (req.user.role === 'admin') {
+        res.status(200).send({ message: 'congratulation!' });
+    }
+    else {
+        res.status(403).send({
+            message: 'unauthorised access'
+        });
+    }
+});
 exports.default = router;
