@@ -66,12 +66,12 @@ const signIn = async (req: Request, res: Response) => {
       expiresIn: "7d",
     });
     //5.put the refresh token in the database
-    user.refreshToken = refreshToken;
+    // user.refreshToken = refreshToken;
 
-    res.cookieParser("refreshToken", refreshToken, {
-      httpOnly: true,
-      path: "/refreshToken",
-    });
+    // res.cookieParser("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   path: "/refreshToken",
+    // });
 
     //6.send the user detail with access token a
     res.status(200).send({
@@ -94,44 +94,45 @@ const signIn = async (req: Request, res: Response) => {
 const logOut = (req: Request, res: Response) => {
   res.clearCookie("refreshToken");
 };
-const refreshToken = async (req:Request, res:Response) => {
-  const token = req.cookies.refreshToken;
-  const { email } = req.body;
-  if (!token) return res.send({ accessToken: "" });
+// const refreshToken = async (req:Request, res:Response) => {
+//   const token = req.cookies.refreshToken;
+//   const { email } = req.body;
+//   if (!token) return res.send({ accessToken: "" });
 
-  try {
-    //1.verify the refreshtoken
-    const payload = jwt.verify(token, process.env.REFRESH_TOKEN as string);
+//   try {
+//     //1.verify the refreshtoken
+//     const payload = jwt.verify(token, process.env.REFRESH_TOKEN as string);
 
-    //2.token exist check for user in the database
-    const user = await User.findOne({ email: email }).exec();
-    if (!user) return res.send({ accessToken: "" });
-    //3.user exists check for refreshtoken
-    if (user.refreshToken !== token) return res.send({ accessToken: "" });
-    const userId = {
-      id: user._id.toString(),
-    };
-    //check if the id are the same
-    if (userId !== payload.id) return res.send({ accessToken: "" });
+//     //2.token exist check for user in the database
+//     const user = await User.findOne({ email: email }).exec();
+//     if (!user) return res.send({ accessToken: "" });
+//     //3.user exists check for refreshtoken
+//     if (user.refreshToken !== token) return res.send({ accessToken: "" });
+//     const userId = {
+//       id: user._id.toString(),
+//     };
+//     //check if the id are the same
+//     if (userId !== payload.id) return res.send({ accessToken: "" });
 
-    //4.token exist create new accesstoken
-    const accessToken = jwt.sign(userId, process.env.ACCESS_TOKEN as string, {
-      expiresIn: 86400, // 24 hours
-    });
-    const newRefreshToken = jwt.sign(userId, process.env.REFRESH_TOKEN as string, {
-      expiresIn: "7d",
-    });
-    //5.put the refresh token in the database
-    user.refreshToken = newRefreshToken;
-    await user.save();
-    res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      path: "/refreshToken",
-    });
-    res.send({ accessToken: accessToken });
-  } catch (error) {
-    console.error("Error refreshing the token:", error);
-    res.status(403).json({ message: "invalid accessToken" });
-  }
-};
-export { signIn, signUp, logOut, refreshToken };
+//     //4.token exist create new accesstoken
+//     const accessToken = jwt.sign(userId, process.env.ACCESS_TOKEN as string, {
+//       expiresIn: 86400, // 24 hours
+//     });
+//     const newRefreshToken = jwt.sign(userId, process.env.REFRESH_TOKEN as string, {
+//       expiresIn: "7d",
+//     });
+//     //5.put the refresh token in the database
+//     user.refreshToken = newRefreshToken;
+//     await user.save();
+//     res.cookie("refreshToken", newRefreshToken, {
+//       httpOnly: true,
+//       path: "/refreshToken",
+//     });
+//     res.send({ accessToken: accessToken });
+//   } catch (error) {
+//     console.error("Error refreshing the token:", error);
+//     res.status(403).json({ message: "invalid accessToken" });
+//   }
+// };
+export { signIn, signUp, logOut,  };
+//refreshToken

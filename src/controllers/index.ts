@@ -1,7 +1,7 @@
 import { INotes } from "../types/type";
 import Notes from "../model/notes";
 import { Request, Response } from "express";
-const getNotes = async (req: Request, res: Response): Promise<void> => {
+const getNotes = async (_req: Request, res: Response): Promise<void> => {
   const getallNotes: INotes[] = await Notes.find();
   res.status(200).json({ message: "All Notes are here", notes: getallNotes });
 };

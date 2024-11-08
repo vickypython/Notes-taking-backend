@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.updateNote = exports.addNote = exports.getNotes = void 0;
 const notes_1 = __importDefault(require("../model/notes"));
-const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getNotes = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getallNotes = yield notes_1.default.find();
     res.status(200).json({ message: "All Notes are here", notes: getallNotes });
 });
