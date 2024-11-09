@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { getNotes, addNote, deleteNote, updateNote } from "../controllers";
-import { signIn, signUp,  logOut } from "../controllers/authControllers";
-//refreshToken,
+import { signIn, signUp,  logOut,refreshToken} from "../controllers/authControllers";
+
 import { verifyingToken } from "../middleware/Openauth";
 const router: Router = Router();
 //for the main application section
@@ -12,7 +12,7 @@ router.delete("/delete-note/:id", deleteNote);
 //for the log in and register section
 router.post("/register", signUp);
 router.post("/login", signIn);
-// router.post('/refreshToken',refreshToken)
+ router.post('/refreshToken',refreshToken)
 router.post('/logout',logOut)
 router.get('/hidden',verifyingToken,function(req:any,res:Response) {
     if(!req.user){

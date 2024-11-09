@@ -31,5 +31,8 @@ const userSchema: Schema = new Schema<IUser>({
     type: Date,
     default: Date.now,
   },
+  refreshToken: { 
+    type: String
+   },
 });
 export default model<IUser>("User", userSchema);
