@@ -8,7 +8,7 @@ export const verifyingToken = async (
 ) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("JWT")) {
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
       return res
         .status(401)
         .send({ message: "Authorization header missing or invalid" });

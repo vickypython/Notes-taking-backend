@@ -73,7 +73,7 @@ const signIn = async (req: Request, res: Response) => {
     // Set the refresh token as a secure, HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true, // use true if using HTTPS
+      // secure: true, // use true if using HTTPS
       path: "/refreshToken",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -162,7 +162,7 @@ const refreshToken = async (req: Request, res: Response) => {
     // Update the cookie with the new refresh token
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: true, // use true if using HTTPS
+      // secure: true, // use true if using HTTPS
       path: "/refreshToken",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });

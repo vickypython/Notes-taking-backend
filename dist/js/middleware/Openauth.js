@@ -18,7 +18,7 @@ const user_1 = __importDefault(require("../model/user"));
 const verifyingToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("JWT")) {
+        if (!authHeader || !authHeader.startsWith("Bearer")) {
             return res
                 .status(401)
                 .send({ message: "Authorization header missing or invalid" });

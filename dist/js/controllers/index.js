@@ -14,14 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.updateNote = exports.addNote = exports.getNotes = void 0;
 const notes_1 = __importDefault(require("../model/notes"));
-const getNotes = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getallNotes = yield notes_1.default.find();
+const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const getallNotes = yield notes_1.default.find({ userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a._id });
     res.status(200).json({ message: "All Notes are here", notes: getallNotes });
 });
 exports.getNotes = getNotes;
 const addNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { title, content } = req.body;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const addNote = new notes_1.default({
+        userId,
         title,
         content,
     });

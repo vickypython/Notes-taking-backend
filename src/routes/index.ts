@@ -5,8 +5,8 @@ import { signIn, signUp,  logOut,refreshToken} from "../controllers/authControll
 import { verifyingToken } from "../middleware/Openauth";
 const router: Router = Router();
 //for the main application section
-router.get("/all-notes", getNotes);
-router.post("/add-note", addNote);
+router.get("/all-notes",verifyingToken, getNotes);
+router.post("/add-note",verifyingToken, addNote);
 router.put("/update-note/:id",updateNote)
 router.delete("/delete-note/:id", deleteNote);
 //for the log in and register section

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logOut = exports.signUp = exports.signIn = void 0;
+exports.refreshToken = exports.logOut = exports.signUp = exports.signIn = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("../model/user"));
@@ -74,11 +74,15 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             expiresIn: "7d",
         });
         //5.put the refresh token in the database
-        // user.refreshToken = refreshToken;
-        // res.cookieParser("refreshToken", refreshToken, {
-        //   httpOnly: true,
-        //   path: "/refreshToken",
-        // });
+        user.refreshToken = refreshToken;
+        // Set the refresh token as a secure, HTTP-only cookie
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            // secure: true, // use true if using HTTPS
+            path: "/refreshToken",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+        yield user.save();
         //6.send the user detail with access token a
         res.status(200).send({
             user: {
@@ -99,8 +103,73 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signIn = signIn;
-const logOut = (req, res) => {
-    res.clearCookie("refreshToken");
-};
+const logOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
+    if (token) {
+        // Find the user by refresh token and clear it in the database
+        const user = yield user_1.default.findOne({ refreshToken: token }).exec();
+        if (user) {
+            user.refreshToken = undefined;
+            yield user.save();
+        }
+        res.clearCookie("refreshToken", { path: "/refreshToken" });
+    }
+    res.status(200).json({ message: "log out successfully" });
+});
 exports.logOut = logOut;
-//refreshToken
+const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
+    const { email } = req.body;
+    if (!token) {
+        res.send({ accessToken: "" });
+        return;
+    }
+    try {
+        //1.verify the refreshtoken
+        const payload = jsonwebtoken_1.default.verify(token, process.env.REFRESH_TOKEN);
+        //2.token exist check for user in the database
+        const user = yield user_1.default.findOne({ email: email }).exec();
+        if (!user) {
+            res.send({ accessToken: "" });
+            return;
+        }
+        //3.user exists check for refreshtoken
+        if (user.refreshToken !== token) {
+            res.send({ accessToken: "" });
+            return;
+        }
+        const userId = {
+            id: user._id.toString(),
+        };
+        //check if the id are the same
+        if (user._id.toString() !== payload.id) {
+            res.send({ accessToken: "" });
+            return;
+        }
+        //4.token exist create new accesstoken
+        const accessToken = jsonwebtoken_1.default.sign(userId, process.env.ACCESS_TOKEN, {
+            expiresIn: 86400, // 24 hours
+        });
+        const newRefreshToken = jsonwebtoken_1.default.sign(userId, process.env.REFRESH_TOKEN, {
+            expiresIn: "7d",
+        });
+        //5.put the refresh token in the database
+        user.refreshToken = newRefreshToken;
+        yield user.save();
+        // Update the cookie with the new refresh token
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+            // secure: true, // use true if using HTTPS
+            path: "/refreshToken",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+        res.send({ accessToken: accessToken });
+    }
+    catch (error) {
+        console.error("Error refreshing the token:", error);
+        res.status(403).json({ message: "invalid accessToken" });
+    }
+});
+exports.refreshToken = refreshToken;
