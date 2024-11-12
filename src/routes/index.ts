@@ -2,11 +2,13 @@ import { Request, Response, Router } from "express";
 import { getNotes, addNote, deleteNote, updateNote } from "../controllers";
 import { signIn, signUp,  logOut,refreshToken} from "../controllers/authControllers";
 
-import { verifyingToken } from "../middleware/Openauth";
+import { verifyingToken, } from "../middleware/Openauth";
+import { authMiddleware } from "../middleware/authMiddleware";
+
 const router: Router = Router();
 //for the main application section
-router.get("/all-notes",verifyingToken, getNotes);
-router.post("/add-note",verifyingToken, addNote);
+router.get("/all-notes",authMiddleware, getNotes);
+router.post("/add-note",authMiddleware, addNote);
 router.put("/update-note/:id",updateNote)
 router.delete("/delete-note/:id", deleteNote);
 //for the log in and register section

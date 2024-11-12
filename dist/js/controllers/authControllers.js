@@ -64,13 +64,13 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         //4.if it is valid asign the user an access token
-        const userId = {
+        const userid = {
             id: user._id,
         };
-        const accessToken = jsonwebtoken_1.default.sign(userId, process.env.ACCESS_TOKEN, {
-            expiresIn: 86400, // 24 hours
+        const accessToken = jsonwebtoken_1.default.sign(userid, process.env.ACCESS_TOKEN, {
+            expiresIn: "24h", // 24 hours
         });
-        const refreshToken = jsonwebtoken_1.default.sign(userId, process.env.REFRESH_TOKEN, {
+        const refreshToken = jsonwebtoken_1.default.sign(userid, process.env.REFRESH_TOKEN, {
             expiresIn: "7d",
         });
         //5.put the refresh token in the database
@@ -121,9 +121,13 @@ exports.logOut = logOut;
 const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
+    console.log(token);
     const { email } = req.body;
     if (!token) {
-        res.send({ accessToken: "" });
+        res.send({
+            message: "No refreshtoken found",
+            accessToken: ""
+        });
         return;
     }
     try {
@@ -132,12 +136,18 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         //2.token exist check for user in the database
         const user = yield user_1.default.findOne({ email: email }).exec();
         if (!user) {
-            res.send({ accessToken: "" });
+            res.send({
+                message: "No user found in the database",
+                accessToken: ""
+            });
             return;
         }
         //3.user exists check for refreshtoken
         if (user.refreshToken !== token) {
-            res.send({ accessToken: "" });
+            res.send({
+                message: "invalid refreshtoken",
+                accessToken: ""
+            });
             return;
         }
         const userId = {
@@ -145,12 +155,15 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         };
         //check if the id are the same
         if (user._id.toString() !== payload.id) {
-            res.send({ accessToken: "" });
+            res.send({
+                message: "user id is not the same",
+                accessToken: ""
+            });
             return;
         }
         //4.token exist create new accesstoken
         const accessToken = jsonwebtoken_1.default.sign(userId, process.env.ACCESS_TOKEN, {
-            expiresIn: 86400, // 24 hours
+            expiresIn: "24h" // 24 hours
         });
         const newRefreshToken = jsonwebtoken_1.default.sign(userId, process.env.REFRESH_TOKEN, {
             expiresIn: "7d",

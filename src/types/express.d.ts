@@ -1,11 +1,11 @@
 // import { JwtPayload } from 'jsonwebtoken';
-import { IUser } from './type';
-declare global{
-namespace express{
-    interface Request{
-        user?:IUser
-    }
-}
+// import { IUser } from './type';
+// declare global{
+// namespace express{
+//     interface Request{
+//         user?:IUser
+//     }
+// }
 
-}
-export {};
+// }
+// export {};

@@ -16,6 +16,8 @@ exports.verifyingToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_1 = __importDefault(require("../model/user"));
 const verifyingToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    /* const head=req.headers
+     console.log("headers:",head);*/
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer")) {
@@ -26,7 +28,7 @@ const verifyingToken = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         //extracting the token from auth header
         const token = (authHeader || "").split(" ")[1];
         //verify token using api secret key
-        const secretKey = process.env.API_SECRET;
+        const secretKey = process.env.ACCESS_TOKEN;
         const decode = jsonwebtoken_1.default.verify(token, secretKey);
         //find user by decoded id
         const user = yield user_1.default.findById({ _id: decode.id });

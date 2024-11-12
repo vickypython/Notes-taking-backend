@@ -4,10 +4,11 @@ const express_1 = require("express");
 const controllers_1 = require("../controllers");
 const authControllers_1 = require("../controllers/authControllers");
 const Openauth_1 = require("../middleware/Openauth");
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = (0, express_1.Router)();
 //for the main application section
-router.get("/all-notes", Openauth_1.verifyingToken, controllers_1.getNotes);
-router.post("/add-note", Openauth_1.verifyingToken, controllers_1.addNote);
+router.get("/all-notes", authMiddleware_1.authMiddleware, controllers_1.getNotes);
+router.post("/add-note", authMiddleware_1.authMiddleware, controllers_1.addNote);
 router.put("/update-note/:id", controllers_1.updateNote);
 router.delete("/delete-note/:id", controllers_1.deleteNote);
 //for the log in and register section

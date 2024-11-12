@@ -16,19 +16,29 @@ exports.deleteNote = exports.updateNote = exports.addNote = exports.getNotes = v
 const notes_1 = __importDefault(require("../model/notes"));
 const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const getallNotes = yield notes_1.default.find({ userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a._id });
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+    if (!userId) {
+        res.status(401).send({ message: "user not authenticated" });
+    }
+    const getallNotes = yield notes_1.default.findById({ userId });
     res.status(200).json({ message: "All Notes are here", notes: getallNotes });
 });
 exports.getNotes = getNotes;
 const addNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { title, content } = req.body;
-    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+    const user = req.user;
+    console.log("here is the user:", user);
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id; // Set userId from req.user, assuming middleware sets it
+    if (!userId) {
+        res.status(401).json({ message: "User not authenticated" });
+    }
     const addNote = new notes_1.default({
-        userId,
         title,
         content,
+        userId,
     });
+    console.log(addNote);
     const newAddedNote = yield addNote.save();
     const allNotes = yield notes_1.default.find();
     res.status(201).json({

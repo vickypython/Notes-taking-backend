@@ -6,9 +6,11 @@ export const verifyingToken = async (
   res: Response,
   next: NextFunction
 ) => {
+ /* const head=req.headers
+  console.log("headers:",head);*/
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
+     if (!authHeader || !authHeader.startsWith("Bearer")) {
       return res
         .status(401)
         .send({ message: "Authorization header missing or invalid" });
@@ -16,7 +18,7 @@ export const verifyingToken = async (
     //extracting the token from auth header
     const token = (authHeader || "").split(" ")[1];
     //verify token using api secret key
-    const secretKey = process.env.API_SECRET as string;
+    const secretKey = process.env.ACCESS_TOKEN as string;
     const decode = jwt.verify(token, secretKey) as JwtPayload;
 
     //find user by decoded id

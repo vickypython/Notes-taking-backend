@@ -1,21 +1,31 @@
 import { INotes } from "../types/type";
 import Notes from "../model/notes";
 import { Request, Response } from "express";
-const getNotes = async (req:any, res: Response): Promise<void> => {
-  const getallNotes: INotes[] = await Notes.find({userId:req.user?._id});
+import { ObjectId } from "mongodb";
+const getNotes = async (req: any, res: Response): Promise<void> => {
+  const userId = req.user._id;
+  if (!userId) {
+    res.status(401).send({ message: "user not authenticated" });
+  }
+  const getallNotes: INotes[] = await Notes.find({userId});
   res.status(200).json({ message: "All Notes are here", notes: getallNotes });
 };
 const addNote = async (req: any, res: Response): Promise<void> => {
-  const { title, content} = req.body as Pick<
-    INotes,
-    "title" | "content" | "userId"
-  >;
-  const userId= req.user?._id
-  const addNote: INotes = new Notes({
-    userId,
+  const { title, content } = req.body as Pick<INotes, "title" | "content">;
+  const user=req.user
+  console.log("here is the user:",user);
+  
+  const userId = req.user._id //as ObjectId; // Set userId from req.user, assuming middleware sets it
+  if (!userId) {
+    res.status(401).json({ message: "User not authenticated" });
+  }
+const addNote: INotes = new Notes({
     title,
     content,
+    userId,
   });
+  console.log(addNote);
+  
   const newAddedNote: INotes = await addNote.save();
   const allNotes: INotes[] = await Notes.find();
 
@@ -28,7 +38,7 @@ const addNote = async (req: any, res: Response): Promise<void> => {
 const updateNote = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
-      params: {id },
+      params: { id },
       body,
     } = req;
 

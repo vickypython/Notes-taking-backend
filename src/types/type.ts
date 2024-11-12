@@ -2,7 +2,7 @@ import { Document, ObjectId } from "mongoose";
 export interface INotes extends Document {
   title: string;
   content: string;
-  userId:string
+  userId:ObjectId
 }
 export interface IUser extends Document {
   _id: ObjectId;

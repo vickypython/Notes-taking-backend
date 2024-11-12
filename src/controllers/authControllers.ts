@@ -59,13 +59,13 @@ const signIn = async (req: Request, res: Response) => {
       });
     }
     //4.if it is valid asign the user an access token
-    const userId = {
+    const userid = {
       id: user._id,
     };
-    const accessToken = jwt.sign(userId, process.env.ACCESS_TOKEN as string, {
-      expiresIn: 86400, // 24 hours
+    const accessToken = jwt.sign(userid, process.env.ACCESS_TOKEN as string, {
+      expiresIn:"24h", // 24 hours
     });
-    const refreshToken = jwt.sign(userId, process.env.REFRESH_TOKEN as string, {
+    const refreshToken = jwt.sign(userid, process.env.REFRESH_TOKEN as string, {
       expiresIn: "7d",
     });
     //5.put the refresh token in the database
@@ -112,9 +112,12 @@ const logOut = async (req: Request, res: Response) => {
 };
 const refreshToken = async (req: Request, res: Response) => {
   const token = req.cookies?.refreshToken;
+  console.log(token);
   const { email } = req.body;
   if (!token) {
-    res.send({ accessToken: "" });
+    res.send({
+      message:"No refreshtoken found",
+      accessToken: "" });
     return;
   }
 
@@ -128,12 +131,16 @@ const refreshToken = async (req: Request, res: Response) => {
     //2.token exist check for user in the database
     const user = await User.findOne({ email: email }).exec();
     if (!user) {
-      res.send({ accessToken: "" });
+      res.send({ 
+        message:"No user found in the database",
+        accessToken: "" });
       return;
     }
     //3.user exists check for refreshtoken
     if (user.refreshToken !== token) {
-      res.send({ accessToken: "" });
+      res.send({ 
+        message:"invalid refreshtoken",
+        accessToken: "" });
       return;
     }
     const userId = {
@@ -141,13 +148,15 @@ const refreshToken = async (req: Request, res: Response) => {
     };
     //check if the id are the same
     if (user._id.toString() !== payload.id) {
-      res.send({ accessToken: "" });
+      res.send({
+        message:"user id is not the same",
+         accessToken: "" });
       return;
     }
 
     //4.token exist create new accesstoken
     const accessToken = jwt.sign(userId, process.env.ACCESS_TOKEN as string, {
-      expiresIn: 86400, // 24 hours
+      expiresIn: "24h" // 24 hours
     });
     const newRefreshToken = jwt.sign(
       userId,
