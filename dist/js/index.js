@@ -14,7 +14,7 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use((0, cookie_parser_1.default)());
 app.use(routes_1.default);
-const MONGO_URL = `mongodb+srv://vickymlucky:${process.env.MONGODB_PASSWORD}@cluster0.xaqfsym.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const MONGO_URL = process.env.MONGODB_URL;
 mongoose_1.default.connect(MONGO_URL);
 const db = mongoose_1.default.connection;
 db.on("error", (error) => console.log(error));

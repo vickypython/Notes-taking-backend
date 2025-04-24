@@ -1,4 +1,4 @@
-import { IUser } from "../types/type";
+// import { IUser} from "../types/type";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/user";
@@ -20,7 +20,7 @@ const signUp = async (req: Request, res: Response) => {
     }
 
     //Create a new user instance of the schema
-    const user: IUser = new User({
+    const user= new User({
       fullName: fullName,
       email: email,
       role: role,

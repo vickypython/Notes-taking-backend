@@ -5,7 +5,9 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest",
-    "start": "npm run build && nodemon dist/js/index.js"
+    "start": "npm run build && node dist/js/index.js",
+    "dev": "nodemon src/index.ts"
+  
   },
   "author": "",
   "license": "ISC",

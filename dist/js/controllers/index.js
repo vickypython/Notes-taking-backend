@@ -15,21 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.updateNote = exports.addNote = exports.getNotes = void 0;
 const notes_1 = __importDefault(require("../model/notes"));
 const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+    const userId = req.user._id;
     if (!userId) {
         res.status(401).send({ message: "user not authenticated" });
     }
-    const getallNotes = yield notes_1.default.findById({ userId });
+    const getallNotes = yield notes_1.default.find({ userId });
     res.status(200).json({ message: "All Notes are here", notes: getallNotes });
 });
 exports.getNotes = getNotes;
 const addNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const { title, content } = req.body;
     const user = req.user;
     console.log("here is the user:", user);
-    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id; // Set userId from req.user, assuming middleware sets it
+    const userId = req.user._id; //as ObjectId; // Set userId from req.user, assuming middleware sets it
     if (!userId) {
         res.status(401).json({ message: "User not authenticated" });
     }

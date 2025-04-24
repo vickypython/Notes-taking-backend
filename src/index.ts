@@ -9,8 +9,7 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser())
 app.use(NotesRoute);
-const MONGO_URL: string =
-  `mongodb+srv://vickymlucky:${process.env.MONGODB_PASSWORD}@cluster0.xaqfsym.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const MONGO_URL: string =process.env.MONGODB_URL!
 mongoose.connect(MONGO_URL);
 const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
