@@ -3,7 +3,7 @@ import express, {Express} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose";
-import NotesRoute from "./routes";
+import NotesRoute from "./routes/index";
 const app:Express= express();
 app.use(express.json());
 app.use(cors({
@@ -11,7 +11,7 @@ app.use(cors({
   credentials:true
 }));
 app.use(cookieParser())
-app.use(NotesRoute);
+app.use('/api',NotesRoute);
 const HOST = '0.0.0.0';
 const PORT = process.env.PORT || 10000;
 const MONGO_URL: string =process.env.MONGODB_URL!
