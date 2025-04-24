@@ -19,6 +19,6 @@ mongoose.connect(MONGO_URL, {
 const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
 db.once("connected", () => console.log("we are in cats"));
-app.listen(5000, () => {
+app.listen(10000, () => {
   console.log(`server running on localhost:${process.env.PORT}`);
 });
