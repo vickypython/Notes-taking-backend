@@ -6,7 +6,10 @@ import mongoose from "mongoose";
 import NotesRoute from "./routes";
 const app:Express= express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin:"https://note-taking-app-three-rosy.vercel.app",
+  credentials:true
+}));
 app.use(cookieParser())
 app.use(NotesRoute);
 const HOST = '0.0.0.0';
