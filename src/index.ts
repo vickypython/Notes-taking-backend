@@ -10,7 +10,12 @@ app.use(cors());
 app.use(cookieParser())
 app.use(NotesRoute);
 const MONGO_URL: string =process.env.MONGODB_URL!
-mongoose.connect(MONGO_URL);
+mongoose.connect(MONGO_URL, {
+ ssl: true,
+  tlsInsecure: false,
+  serverApi: '1', // optional, forces Stable API
+  tlsAllowInvalidCertificates: false
+});
 const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
 db.once("connected", () => console.log("we are in cats"));
