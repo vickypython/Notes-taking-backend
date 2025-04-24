@@ -9,11 +9,12 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser())
 app.use(NotesRoute);
+const HOST = '0.0.0.0';
 const MONGO_URL: string =process.env.MONGODB_URL!
 mongoose.connect(MONGO_URL);
 const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
 db.once("connected", () => console.log("we are in cats"));
 app.listen(10000, () => {
-  console.log(`server running on localhost:${process.env.PORT}`);
+  console.log(`server running on ${HOST}:${process.env.PORT}`);
 });
