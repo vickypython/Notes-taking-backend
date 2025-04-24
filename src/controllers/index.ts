@@ -2,6 +2,9 @@ import { INotes } from "../types/type";
 import Notes from "../model/notes";
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
+const welcome=async(req:Request,res:Response)=>{
+  res.status(200).send("welcome and have a good time")
+}
 const getNotes = async (req: any, res: Response): Promise<void> => {
   const userId = req.user._id;
   if (!userId) {
@@ -73,4 +76,4 @@ const deleteNote = async (req: Request, res: Response): Promise<void> => {
     throw new Error("error");
   }
 };
-export { getNotes, addNote, updateNote, deleteNote };
+export { welcome,getNotes, addNote, updateNote, deleteNote };

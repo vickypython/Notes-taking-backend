@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { getNotes, addNote, deleteNote, updateNote } from "../controllers";
+import { getNotes, addNote, deleteNote, updateNote ,welcome} from "../controllers";
 import { signIn, signUp,  logOut,refreshToken} from "../controllers/authControllers";
 
 import { verifyingToken, } from "../middleware/Openauth";
@@ -7,6 +7,7 @@ import { authMiddleware } from "../middleware/authMiddleware";
 
 const router: Router = Router();
 //for the main application section
+router.get("/",welcome)
 router.get("/all-notes",authMiddleware, getNotes);
 router.post("/add-note",authMiddleware, addNote);
 router.put("/update-note/:id",updateNote)
